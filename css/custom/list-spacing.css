@@ -1,0 +1,16 @@
+/* 调整无序列表项的左边距，减少 bullet 前的间距 */
+ul li {
+  margin-left: 0.2em !important;
+  padding-left: 0.6em !important;
+}
+
+/* 确保嵌套列表也应用相同的样式 */
+ul ul li {
+  margin-left: 0.2em !important;
+  padding-left: 0.6em !important;
+}
+
+/* 保持列表项的其他样式不变 */
+ul li::marker {
+  color: inherit;
+}
