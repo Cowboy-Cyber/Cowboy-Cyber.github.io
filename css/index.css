@@ -4050,6 +4050,10 @@ figure.highlight pre .javascript .function {
 .container.post-content h6:hover {
   padding-left: 24px;
 }
+.container.post-content ol,
+.container.post-content ul {
+  padding-left: 1.2em;
+}
 .container.post-content ol p,
 .container.post-content ul p {
   margin: 0 0 8px;
