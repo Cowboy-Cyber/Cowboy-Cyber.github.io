@@ -1,0 +1,34 @@
+/* 折叠面板标题样式 */
+.folding-series-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    /* color: #6DC1F7; */
+}
+
+.folding-large-title {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.folding-medium-title {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.folding-small-title {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+/* 特定用途的样式 */
+.folding-note-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #3498db;
+}
+
+.folding-warning-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #e74c3c;
+}
