@@ -2,6 +2,10 @@
 // 只负责渲染地图和列表，地点数据由 index.md 传入
 
 window.renderFootprintMap = function(footprints) {
+  // 设置弹窗圆角样式
+  const style = document.createElement('style');
+  document.head.appendChild(style);
+
   // 自定义更小的 marker 图标
   const smallIcon = L.icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -10,6 +14,10 @@ window.renderFootprintMap = function(footprints) {
     popupAnchor: [1, -24]
   });
   const map = L.map('leaflet-map', { scrollWheelZoom: false }).setView([35.8617, 104.1954], 2);
+  // 设置地图容器为页面最底层
+  map.getContainer().style.zIndex = '0';
+  // 设置地图窗口圆角
+  map.getContainer().style.borderRadius = '1%';
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: ''
   }).addTo(map);
