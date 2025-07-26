@@ -3947,6 +3947,7 @@ figure.highlight pre .javascript .function {
 }
 .container a {
   color: #49b1f5;
+  text-decoration: underline;
 }
 .container a:hover {
   text-decoration: underline;
