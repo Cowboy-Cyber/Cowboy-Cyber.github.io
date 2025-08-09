@@ -1,0 +1,359 @@
+<!DOCTYPE html><html lang="en" data-theme="dark"><head><!-- hexo injector head_begin start --><link href="https://fastly.jsdelivr.net/npm/hexo-tag-common@0.2.0/css/index.css" rel="stylesheet"/><!-- hexo injector head_begin end --><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>SGD and Adam | Midnight Blue</title><meta name="author" content="Cowboy Cyber"><meta name="copyright" content="Cowboy Cyber"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="Understanding SGD and Adam Optimizer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SGD and Adam">
+<meta property="og:url" content="http://cowboy-cyber.github.io/2025/08/08/gradient-descent-and-adam/index.html">
+<meta property="og:site_name" content="Midnight Blue">
+<meta property="og:description" content="Understanding SGD and Adam Optimizer">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cowboy-cyber.github.io/post_img/covers/sgd-adam.png">
+<meta property="article:published_time" content="2025-08-08T08:00:00.000Z">
+<meta property="article:modified_time" content="2025-08-08T15:29:08.215Z">
+<meta property="article:author" content="Cowboy Cyber">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cowboy-cyber.github.io/post_img/covers/sgd-adam.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "SGD and Adam",
+  "url": "http://cowboy-cyber.github.io/2025/08/08/gradient-descent-and-adam/",
+  "image": "https://cowboy-cyber.github.io/post_img/covers/sgd-adam.png",
+  "datePublished": "2025-08-08T08:00:00.000Z",
+  "dateModified": "2025-08-08T15:29:08.215Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Cowboy Cyber",
+      "url": "https://github.com/Cowboy-Cyber"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/laughman-nobg.png"><link rel="canonical" href="http://cowboy-cyber.github.io/2025/08/08/gradient-descent-and-adam/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"No results found for: ${query}","hits_stats":"${hits} articles found"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: true,
+  islazyloadPlugin: false,
+  isAnchor: true,
+  percent: {
+    toc: false,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'SGD and Adam',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom/custom_aplayer.css"><link rel="stylesheet" href="/css/custom/list-spacing.css"><link rel="stylesheet" href="/css/custom/folding-styles.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/laughman-nobg.webp" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-file-lines"></i><span> Articles</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archive</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tag</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Category</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/diary/"><i class="fa-fw fas fa-book-open"></i><span> Diary</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fas fa-images"></i><span> Photo</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-link"></i><span> Link</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-users"></i><span> Friends</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> Me</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(https://cowboy-cyber.github.io/post_img/covers/sgd-adam.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/laughman-nobg.png" alt="Logo"></a><a class="nav-page-title" href="/"><span class="site-name">SGD and Adam</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-file-lines"></i><span> Articles</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archive</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tag</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Category</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/diary/"><i class="fa-fw fas fa-book-open"></i><span> Diary</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fas fa-images"></i><span> Photo</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-link"></i><span> Link</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-users"></i><span> Friends</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> Me</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">SGD and Adam</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-author"><i class="fas fa-user fa-fw post-meta-icon"></i><span class="post-meta-label">Author:</span><span>Cowboy Cyber</span></span><span class="post-meta-date"><span class="post-meta-separator">|</span><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-08-08T08:00:00.000Z" title="Created 2025-08-08 16:00:00">2025-08-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-08-08T15:29:08.215Z" title="Updated 2025-08-08 23:29:08">2025-08-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/ML-Series/">ML Series</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">1.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading Time:</span><span>4mins</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><div class="note info simple"><p>参考：<strong><a
+target="_blank" rel="noopener" href="https://udlbook.github.io/udlbook/">Understanding Deep
+Learning</a> Chapter 6. Fitting Models</strong></p>
+</div>
+
+<h2 id="from-gd-to-sgd">From GD to SGD</h2>
+<p>Gradient Descent 在优化 ML 模型的高维非凸损失函数时，通常会遇到
+<strong>1. 局部极小值 2. 鞍点</strong> 问题。</p>
+<p>这些问题与初始参数选择有关，不具有随机性，可能会导致梯度下降停在局部极小值或鞍点上。为了解决这些问题，随机梯度下降（SGD）被提出。</p>
+<p>SGD 仅通过 batch 来小批量计算梯度，实现了参数更新方向的随机化。在一个
+epoch 内遍历所有 batch
+时，参数总会找到不同的梯度方向，从而避免停在局部极小值或鞍点上。SGD
+的更新公式为： <span class="math display">\[\phi_{t+1} \gets \phi_t -
+\alpha \cdot \sum_{i \in \mathcal{B}_t} \frac{\partial
+\ell_i[\phi_t]}{\partial \phi}\]</span></p>
+<p><span class="math inline">\(\mathcal{B}_t\)</span> 是在一个 epoch
+内的第 <span class="math inline">\(t\)</span> 个 batch。</p>
+<h2 id="adam-optimizer">Adam Optimizer</h2>
+<p>Adam 是一种自适应学习率优化算法，结合了 Momentum 和 RMSProp
+的优点。它通过计算梯度的一阶矩（均值）和二阶矩（方差）来调整每个参数的学习率。</p>
+<h3 id="momentum">Momentum</h3>
+<p>Momentum 动量：</p>
+<p><span class="math display">\[\mathbf{g}_{t} = \sum_{i \in
+\mathcal{B}_t} \frac{\partial \ell_i[\phi_t]}{\partial
+\phi}\]</span></p>
+<p><span class="math display">\[\mathbf{m}_{t+1} \gets \beta \cdot
+\mathbf{m}_t + (1 - \beta) \cdot \mathbf{g}_{t}\]</span></p>
+<p><span class="math display">\[\phi_{t+1} \gets \phi_t - \alpha \cdot
+\mathbf{m}_{t+1}\]</span></p>
+<p>其中 <span class="math inline">\(\beta \in [0.9, 0.99]\)</span>,
+<span class="math inline">\(\mathbf{m}_0 = 0\)</span>。</p>
+<p>动量的本质是梯度随时间的累积，包含过去所有梯度的指数加权平均。这种类似于凸优化中的共轭梯度方法，目的是提供惯性，减少梯度的震荡，使参数更新更平滑，从而加速收敛。</p>
+<img src="https://s2.loli.net/2025/08/08/Hh3v5keEXCpUTQb.png" alt="Pure Gradient Descent vs. Momentum" style="zoom: 67%;" />
+
+<h3 id="rmsprop">RMSProp</h3>
+<p>RMSProp
+是一种自适应学习率方法，通过计算梯度的二阶矩来调整每个参数的学习率，防止学习率过大或过小。它的更新公式为：</p>
+<p><span class="math display">\[\mathbf{v}_{t+1} \gets \gamma \cdot
+\mathbf{v}_t + (1 - \gamma)
+\cdot \mathbf{g}_{t}^2\]</span></p>
+<p><span class="math display">\[\phi_{t+1} \gets \phi_t - \alpha \cdot
+\frac{\mathbf{g}_{t+1}}{\sqrt{\mathbf{v}_{t+1}} + \epsilon}\]</span></p>
+<p>其中 <span class="math inline">\(\gamma \in [0.9, 0.99]\)</span>,
+<span class="math inline">\(\epsilon =
+1e-8\)</span>，防止除零错误；<span class="math inline">\(\mathbf{v}_0 =
+0\)</span>。</p>
+<div class="note info flat"><p>这里的 <span class="math inline">\(\mathbf{g}_{t}^2\)</span> 是对
+<span class="math inline">\(\mathbf{g}_{t}\)</span>
+的逐元素平方，因而是二阶矩，用来衡量每个参数的梯度的绝对值大小，然后用这个值做缩放，使梯度大时学习率小，梯度小时学习率大。相当于原来的学习率
+<span class="math inline">\(\alpha \rightarrow \alpha /
+\sqrt{\mathbf{v}_{t+1}}\)</span>，使得每个参数的学习率根据梯度的二阶矩进行自适应调整。</p>
+</div>
+
+<h3 id="adam-optimizer-1">Adam Optimizer</h3>
+<p><code>Adam = Adaptive moment estimation</code> 结合了 Momentum 和
+RMSProp，同时使用一阶矩和二阶矩，兼具抑制震荡和自适应更新学习率的优点。Adam
+的更新公式为：</p>
+<p><span class="math display">\[\mathbf{g}_{t} = \sum_{i \in
+\mathcal{B}_t} \frac{\partial \ell_i[\phi_t]}{\partial
+\phi}\]</span></p>
+<p><span class="math display">\[\mathbf{m}_{t+1} \gets \beta \cdot
+\mathbf{m}_t + (1 - \beta) \cdot \mathbf{g}_{t}\]</span></p>
+<p><span class="math display">\[\mathbf{v}_{t+1} \gets \gamma \cdot
+\mathbf{v}_t + (1 - \gamma) \cdot \mathbf{g}_{t}^2\]</span></p>
+<p><span class="math display">\[\phi_{t+1} \gets \phi_t - \alpha \cdot
+\frac{\mathbf{m}_{t+1}}{\sqrt{\mathbf{v}_{t+1}} + \epsilon}\]</span></p>
+<p><strong>偏差校正</strong></p>
+<p>训练开始时 <span class="math inline">\(\mathbf{m}_0 = 0, \mathbf{v}_0
+=
+0\)</span>，导致初始时刻的一阶矩和二阶矩估计偏小。为了防止起步时的失真（我认为这里由于
+<span class="math inline">\(\mathbf{m}_t, \sqrt{\mathbf{v}_t}\)</span>
+是同级别的，很难说如果不修正，最终的更新量会偏大还是偏小，但总归是失真），Adam
+引入了偏差校正：</p>
+<p><span class="math display">\[\hat{\mathbf{m}}_{t+1} =
+\frac{\mathbf{m}_{t+1}}{1 - \beta^{t+1}}\]</span> <span
+class="math display">\[\hat{\mathbf{v}}_{t+1} =
+\frac{\mathbf{v}_{t+1}}{1 - \gamma^{t+1}}\]</span></p>
+<p><span class="math display">\[\phi_{t+1} \gets \phi_t - \alpha \cdot
+\frac{\hat{\mathbf{m}}_{t+1}}{\sqrt{\hat{\mathbf{v}}_{t+1}} +
+\epsilon}\]</span></p>
+<p>从而在训练初期，<span class="math inline">\(\hat{\mathbf{m}}_t,
+\hat{\mathbf{v}}_t\)</span>
+能更接近单步梯度的结果，而随着时间的推移，偏差校正的影响指数衰减，过渡到稳定状态。</p>
+<h3 id="adamw">AdamW</h3>
+<p>AdamW 是 Adam 的一个变种，主要区别在于权重衰减的处理方式。AdamW
+将权重衰减作为独立的正则化项，而不是将其包含在梯度计算中。这种方法可以更有效地控制模型的复杂度，防止过拟合。</p>
+<p>具体来说，在 Adam 中，可以指定权重衰减系数 <span
+class="math inline">\(\lambda\)</span> =
+<code>weight_decay</code>，它在计算梯度时会被加到梯度上： <span
+class="math display">\[\mathbf{g}_{t} = \sum_{i \in \mathcal{B}_t}
+\frac{\partial \ell_i[\phi_t]}{\partial \phi} + \lambda \cdot
+\phi_t\]</span></p>
+<p>这相当于在损失函数中添加了一个正则化项， <span
+class="math display">\[Loss = \ell + \frac{\lambda}{2}
+||\phi||^2\]</span></p>
+<p>这样做导致当前参数 <span class="math inline">\(\phi_t\)</span>
+被加入至 <span class="math inline">\(\mathbf{g}_t\)</span>
+后，继续参与一二阶矩的计算，与梯度更新的历史耦合在一起，影响了动量和自适应学习率的效果。</p>
+<p>而 AdamW
+则将权重衰减独立出来，在参数更新时单独应用，而不是加入到梯度中： <span
+class="math display">\[\phi_{t+1} \gets \phi_t - \alpha \cdot
+\frac{\hat{\mathbf{m}}_{t+1}}{\sqrt{\hat{\mathbf{v}}_{t+1}} + \epsilon}
+- \alpha \cdot \lambda \cdot \phi_t\]</span></p>
+<p>这种方式确保了权重衰减不会影响动量和自适应学习率的计算，从而提高了优化过程的稳定性和效果。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Cowboy-Cyber">Cowboy Cyber</a></span></div><div class="post-copyright__contact"><span class="post-copyright-meta"><i class="fas fa-comment-dots fa-fw"></i>Comment: </span><span class="post-copyright-info">Please send comments on these web pages to <a href="mailto:rong73244@gmail.com">rong73244@gmail.com</a>.</span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://cowboy-cyber.github.io/2025/08/08/gradient-descent-and-adam/">http://cowboy-cyber.github.io/2025/08/08/gradient-descent-and-adam/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/AI/">AI</a><a class="post-meta__tags" href="/tags/Machine-Learning/">Machine Learning</a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/07/31/SMPL-note/" title="Note on SMPL"><img class="cover" src="https://cowboy-cyber.github.io/post_img/covers/SMPL.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">Note on SMPL</div></div><div class="info-2"><div class="info-item-1">SMPL Human Parametric Model</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#from-gd-to-sgd"><span class="toc-text">From GD to SGD</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#adam-optimizer"><span class="toc-text">Adam Optimizer</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#momentum"><span class="toc-text">Momentum</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rmsprop"><span class="toc-text">RMSProp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#adam-optimizer-1"><span class="toc-text">Adam Optimizer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#adamw"><span class="toc-text">AdamW</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/snow.png);"><div id="footer-wrap"><div class="copyright">Midnight Blue <span style="color:#1271A6; margin: 0 2px;"><i class="fa fa-globe"></i></span><span style="color:#1271A6; margin: 0 2px;"><i class="fa fa-desktop"></i></span> 2023-2025</div><div class="framework-info"><span>Powered By Framework </span><a target="_blank" rel="noopener" href="https://hexo.io" style="text-decoration: underline;">Hexo</a><span class="footer-separator">&</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly" style="text-decoration: underline;">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'none',
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          enableMenu: true,
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script><script>(() => {
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = `%%{init:{ 'theme':'${theme}'}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (true) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><canvas id="snow-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;pointer-events:none;"></canvas><script src="/js/snow.js"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div><!-- hexo injector body_end start --><script src="https://fastly.jsdelivr.net/npm/hexo-tag-common@0.2.0/js/index.js"></script><!-- hexo injector body_end end --></body></html>
