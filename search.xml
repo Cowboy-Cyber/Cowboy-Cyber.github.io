@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>Note on Data Structure and Algorithms (DSA)</title>
+      <link href="/2025/08/10/dsa/"/>
+      <url>/2025/08/10/dsa/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="基本概念">基本概念</h2><img src="https://s2.loli.net/2025/08/10/jPU3J1dmigb2TEI.png" alt="Overview of Data Structure" style="width: 100%; max-width: 600px; margin: auto; display: block;" /><p><strong><code>数据结构</code></strong> =<strong><code>逻辑结构</code></strong> +<strong><code>存储结构</code></strong> +<strong><code>数据操作</code></strong></p><ul><li><strong>逻辑结构</strong>：数据元素之间的关系（集合、线性、树、图）</li><li><strong>存储结构 / 物理结构</strong>：数据在计算机中的存储方式。同一逻辑结构可以有多种存储结构。<ul><li>顺序存储：数组，只需头指针</li><li>链式存储：需要对所有元素的存储进行索引（头指针、尾指针、索引表等）/哈希（存储关键码，通过散列函数计算存储位置）</li></ul></li><li><strong>数据操作</strong>：建立，清除，求长，判空，判满，查找，获取，更新，插入，删除，遍历</li></ul><p><strong><code>抽象数据类型 (ADT)</code></strong> = 三元组 <spanclass="math inline">\((Data, Relation, Operation)\)</span></p><ul><li>ADT 就是 Struct 或 Class 本身</li><li>基本 ADT：list, stack, queue, tree, graph, set, map……</li><li>数据结构就是 ADT 的设计与实现</li></ul><p><strong>复杂度分析</strong> | 符号 | 名称 | 含义 | | ––––––– | —–– |–––––––––––––– | | <span class="math inline">\(O(f(n))\)</span> |大O（上界） | 最坏情况下，运行时间不会比某个常数倍的 <spanclass="math inline">\(f(n)\)</span> 大 | | <spanclass="math inline">\(\Omega(f(n))\)</span> | 大Ω（下界） |最好情况下，运行时间至少是某个常数倍的 <spanclass="math inline">\(f(n)\)</span> | | <spanclass="math inline">\(\Theta(f(n))\)</span> | 大Θ（紧确界） |最坏和最好情况的增长量级都等于 <span class="math inline">\(f(n)\)</span>|</p><p>渐进复杂度 <span class="math inline">\(O(·)\)</span> 只考虑最高阶</p><p><strong>递归</strong></p><ul><li>两种思路：分治 &amp; 减治</li><li>复杂度用递推公式计算</li><li>递归与迭代：递归的可读性好；但递归调用函数效率低；栈溢出风险。迭代写起来dirty，但可能有更好的效率。</li></ul><blockquote><p>递归类似于脚本小子，迭代类似于自己造轮子</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> 笔记 </category>
+          
+          <category> CS Series </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> DSA </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>SGD and Adam</title>
       <link href="/2025/08/08/gradient-descent-and-adam/"/>
       <url>/2025/08/08/gradient-descent-and-adam/</url>
